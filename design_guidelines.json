@@ -1,0 +1,117 @@
+{
+  "theme": "dark",
+  "archetype": "4 (Swiss & High-Contrast)",
+  "vibe": "Elegant, Minimalist, Functional, Objective",
+  "typography": {
+    "headings": {
+      "font_family": "Manrope, sans-serif",
+      "weights": ["400", "600", "800"],
+      "usage_rules": "Use tracking-tight for all headings. Never center-align unless specifically needed for symmetry. Use for dashboard titles, column headers, and major section titles."
+    },
+    "body": {
+      "font_family": "Inter, sans-serif",
+      "weights": ["400", "500", "600"],
+      "usage_rules": "Highly legible, tracking-normal. Use for all task details, descriptions, and UI labels."
+    },
+    "labels": {
+      "usage_rules": "Uppercase, text-xs, tracking-[0.2em] for overlines and tiny metadata (e.g., tags, column headers)."
+    },
+    "imports": [
+      "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@400;600;800&display=swap');"
+    ]
+  },
+  "colors": {
+    "background": {
+      "base": "#09090B",
+      "surface": "#18181B",
+      "elevated": "#27272A"
+    },
+    "text": {
+      "primary": "#FAFAFA",
+      "secondary": "#A1A1AA",
+      "muted": "#71717A"
+    },
+    "border": {
+      "default": "#27272A",
+      "focus": "#FAFAFA"
+    },
+    "brand": {
+      "primary": "#FAFAFA",
+      "primary_foreground": "#09090B"
+    },
+    "semantic": {
+      "priority_high": "#EF4444",
+      "priority_medium": "#F59E0B",
+      "priority_low": "#3B82F6",
+      "status_todo": "#71717A",
+      "status_progress": "#EAB30B",
+      "status_done": "#22C55E"
+    },
+    "rules": "Tinted Grey Rule applied (using Zinc palette which has a very subtle cool undertone). Never use pure #000000 or #808080. Hover states must explicitly set text color."
+  },
+  "layout_and_spacing": {
+    "strategy": "The 'Control Room' Grid - High density, strict hierarchy, every pixel utilized.",
+    "sidebar": "Collapsible left sidebar for navigation. 1px right border (border-zinc-800).",
+    "topbar": "Sticky top bar with search, user profile, notifications. Solid background with bottom border (border-zinc-800).",
+    "kanban_board": "Full height columns. Columns must stretch to fill vertical space. Use flex-col and flex-grow for inner lists.",
+    "spacing_scale": "Use p-4, p-6, p-8 for containers. Internal card spacing p-4. Grid gaps: gap-4 or gap-6 for dashboard widgets.",
+    "alignment": "Left-align by default for readability. Optical alignment for icons within buttons."
+  },
+  "components": {
+    "cards": {
+      "kanban_ticket": "Flat background (bg-zinc-900), 1px subtle border (border-zinc-800), rounded-md. NO shadow by default. Hover: border-zinc-600, slight lift (-translate-y-[1px]), shadow-lg.",
+      "dashboard_widget": "Grid Borders strategy. Flat surfaces, simple 1px borders (border-zinc-800)."
+    },
+    "buttons": {
+      "primary": "Solid white (bg-zinc-50 text-zinc-950), crisp edges (rounded-md). Hover: bg-zinc-200.",
+      "secondary": "Outline (border-zinc-800 text-zinc-300). Hover: bg-zinc-800 text-zinc-50.",
+      "ghost": "Transparent background, text-zinc-400. Hover: bg-zinc-900 text-zinc-50."
+    },
+    "inputs": {
+      "default": "Shadcn default, bg-zinc-950, border-zinc-800, text-zinc-50. Focus: ring-1 ring-zinc-50 border-zinc-50."
+    },
+    "badges": {
+      "priority": "Subtle background with high contrast text (e.g., bg-red-500/10 text-red-500 border border-red-500/20) for elegant visibility."
+    }
+  },
+  "motion_and_interactions": {
+    "hover_states": "All interactive elements must have a visible hover state. Usually a background lighten or border highlight.",
+    "drag_and_drop": "Kanban cards must scale slightly (scale-105) and gain a drop-shadow-2xl when dragging. Columns must highlight (e.g., bg-zinc-900/50) when a card is dragged over them.",
+    "transitions": "Use specific properties: transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease."
+  },
+  "icons": {
+    "library": "lucide-react",
+    "usage": "Use 16px (w-4 h-4) for inline icons, 20px (w-5 h-5) for sidebar navigation. Always stroke-width 1.5 or 2."
+  },
+  "testing": {
+    "rules": "All interactive elements MUST include a data-testid attribute. Format: kebab-case, role-based. E.g., data-testid='add-task-button'."
+  },
+  "media": {
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1761998066478-821bf52c2849?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGRhcmslMjBtaW5pbWFsaXN0JTIwZ2VvbWV0cmljJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3NzQ4ODEzODZ8MA&ixlib=rb-4.1.0&q=85",
+        "category": "auth_background",
+        "description": "Abstract black curved shapes on black background, perfect for the login/register screen split layout."
+      },
+      {
+        "url": "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "category": "user_avatar_1",
+        "description": "Close-up portrait of a young man, use for dummy task assignees or current user profile."
+      },
+      {
+        "url": "https://images.pexels.com/photos/262391/pexels-photo-262391.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "category": "user_avatar_2",
+        "description": "Close-up portrait of a serious businessman, use for dummy task assignees."
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Build a React Dashboard with a left sidebar and main content area.",
+    "Implement the Kanban board drag and drop functionality.",
+    "Ensure the theme is purely dark mode by default, following the color palette specified. Do not use generic blue or purple defaults.",
+    "Use Shadcn UI components but heavily customize them to remove the 'default Vercel look'. Use flat borders and no shadows for default card states.",
+    "Implement data-testid attributes on all interactive elements as requested.",
+    "Use Manrope for all headings and Inter for body text. Ensure they are imported correctly in the global CSS.",
+    "The Auth page should have a split layout using the provided auth_background image on one side."
+  ]
+}
