@@ -1,28 +1,18 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
-import axios from "axios";
+
+import { formatApiError } from "../api/client";
+import { authApi } from "../api/taskflowApi";
 
 const AuthContext = createContext(null);
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
-
-// Helper to format API error
-function formatApiErrorDetail(detail) {
-  if (detail == null) return "Algo salió mal. Por favor intenta de nuevo.";
-  if (typeof detail === "string") return detail;
-  if (Array.isArray(detail))
-    return detail.map((e) => (e && typeof e.msg === "string" ? e.msg : JSON.stringify(e))).filter(Boolean).join(" ");
-  if (detail && typeof detail.msg === "string") return detail.msg;
-  return String(detail);
-}
-
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null); // null = checking, false = not authenticated, object = authenticated
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const checkAuth = useCallback(async () => {
     try {
-      const response = await axios.get(`${API}/auth/me`, { withCredentials: true });
-      setUser(response.data);
+      const data = await authApi.me();
+      setUser(data);
     } catch {
       setUser(false);
     } finally {
@@ -36,46 +26,34 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post(
-        `${API}/auth/login`,
-        { email, password },
-        { withCredentials: true }
-      );
-      setUser(response.data);
+      const data = await authApi.login({ email, password });
+      setUser(data);
       return { success: true };
-    } catch (e) {
-      return { success: false, error: formatApiErrorDetail(e.response?.data?.detail) || e.message };
+    } catch (error) {
+      return { success: false, error: formatApiError(error, error.message) };
     }
   };
 
   const register = async (email, password, name) => {
     try {
-      const response = await axios.post(
-        `${API}/auth/register`,
-        { email, password, name },
-        { withCredentials: true }
-      );
-      setUser(response.data);
+      const data = await authApi.register({ email, password, name });
+      setUser(data);
       return { success: true };
-    } catch (e) {
-      return { success: false, error: formatApiErrorDetail(e.response?.data?.detail) || e.message };
+    } catch (error) {
+      return { success: false, error: formatApiError(error, error.message) };
     }
   };
 
   const logout = async () => {
     try {
-      await axios.post(`${API}/auth/logout`, {}, { withCredentials: true });
+      await authApi.logout();
     } catch {
-      // Ignore errors
+      // noop
     }
     setUser(false);
   };
 
-  return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, checkAuth }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ user, loading, login, register, logout, checkAuth }}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
