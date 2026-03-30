@@ -1,7 +1,7 @@
 fastapi==0.110.1
 uvicorn==0.25.0
-motor==3.3.1
-pymongo==4.5.0
+motor==3.7.1
+pymongo==4.9.2
 pydantic==2.12.5
 pydantic-settings==2.11.0
 email-validator==2.3.0
