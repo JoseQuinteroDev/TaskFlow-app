@@ -8,6 +8,7 @@ from app.core.database import db
 from app.core.security import get_current_user
 from app.models.schemas import StatusUpdate, TaskCreate, TaskResponse, TaskUpdate
 from app.services.reminder_service import remove_reminder_jobs, schedule_task_reminders
+from app.services.reminder_service import remove_reminder_job, schedule_task_reminder
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
@@ -70,6 +71,7 @@ def serialize_task(task: dict) -> TaskResponse:
     repeat_start_at = parse_datetime_input(task.get("repeat_start_at"))
     repeat_end_at = parse_datetime_input(task.get("repeat_end_at"))
 
+def serialize_task(task: dict) -> TaskResponse:
     return TaskResponse(
         id=str(task["_id"]),
         title=task["title"],
@@ -86,6 +88,10 @@ def serialize_task(task: dict) -> TaskResponse:
         repeat_every_minutes=task.get("repeat_every_minutes"),
         repeat_start_at=to_iso(repeat_start_at),
         repeat_end_at=to_iso(repeat_end_at),
+        due_date=task.get("due_date"),
+        category=task.get("category"),
+        tags=task.get("tags", []),
+        reminder=task.get("reminder"),
         user_id=task["user_id"],
         created_at=task["created_at"],
         updated_at=task["updated_at"],
@@ -110,6 +116,10 @@ async def create_task(task_data: TaskCreate, request: Request):
         "category": task_data.category,
         "tags": task_data.tags,
         **reminders,
+        "due_date": task_data.due_date,
+        "category": task_data.category,
+        "tags": task_data.tags,
+        "reminder": task_data.reminder,
         "user_id": user["id"],
         "created_at": now_iso,
         "updated_at": now_iso,
@@ -119,6 +129,10 @@ async def create_task(task_data: TaskCreate, request: Request):
     task_doc["_id"] = result.inserted_id
     schedule_task_reminders(str(result.inserted_id), user, task_doc)
 
+    task_id = str(result.inserted_id)
+    task_doc["_id"] = result.inserted_id
+
+    schedule_task_reminder(task_id, user, task_data.title, task_data.due_date or "Not specified", task_data.reminder)
     return serialize_task(task_doc)
 
 
@@ -170,6 +184,7 @@ async def update_task(task_id: str, task_data: TaskUpdate, request: Request):
 
     update_doc = {"updated_at": datetime.now(timezone.utc).isoformat()}
     for field in ["title", "description", "status", "priority", "category", "tags"]:
+    for field in ["title", "description", "status", "priority", "due_date", "category", "tags", "reminder"]:
         value = getattr(task_data, field)
         if value is not None:
             update_doc[field] = value
@@ -197,6 +212,18 @@ async def update_task(task_id: str, task_data: TaskUpdate, request: Request):
     if any(value is not None for value in reminder_fields):
         schedule_task_reminders(task_id, user, updated_task)
 
+    if task_data.reminder is not None:
+        remove_reminder_job(task_id)
+        schedule_task_reminder(
+            task_id,
+            user,
+            task_data.title or task["title"],
+            task_data.due_date or task.get("due_date") or "Not specified",
+            task_data.reminder,
+        )
+
+    await db.tasks.update_one({"_id": ObjectId(task_id)}, {"$set": update_doc})
+    updated_task = await db.tasks.find_one({"_id": ObjectId(task_id)})
     return serialize_task(updated_task)
 
 
@@ -209,6 +236,7 @@ async def delete_task(task_id: str, request: Request):
         raise HTTPException(status_code=404, detail="Task not found")
 
     remove_reminder_jobs(task_id)
+    remove_reminder_job(task_id)
     return {"message": "Task deleted successfully"}
 
 

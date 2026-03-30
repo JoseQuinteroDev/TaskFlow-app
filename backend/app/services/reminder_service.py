@@ -80,5 +80,29 @@ def schedule_task_reminders(task_id: str, user: dict, task_doc: dict) -> None:
                     id=f"reminder_recurring_{task_id}",
                     replace_existing=True,
                 )
+def remove_reminder_job(task_id: str) -> None:
+    try:
+        scheduler.remove_job(f"reminder_{task_id}")
+    except Exception:
+        return
+
+
+def schedule_task_reminder(task_id: str, user: dict, task_title: str, due_date: str, reminder_iso: str) -> None:
+    if not settings.SENDGRID_API_KEY or not reminder_iso:
+        return
+
+    try:
+        reminder_time = datetime.fromisoformat(reminder_iso.replace("Z", "+00:00"))
+        if reminder_time <= datetime.now(timezone.utc):
+            return
+
+        scheduler.add_job(
+            send_task_reminder,
+            "date",
+            run_date=reminder_time,
+            args=[user["email"], user["name"], task_title, due_date or "Not specified"],
+            id=f"reminder_{task_id}",
+            replace_existing=True,
+        )
     except Exception as exc:
         logger.error("Failed to schedule reminder for task %s: %s", task_id, exc)

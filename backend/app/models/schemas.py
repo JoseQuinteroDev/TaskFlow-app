@@ -2,6 +2,9 @@ from datetime import datetime
 from typing import List, Literal, Optional
 
 from pydantic import BaseModel, EmailStr, Field, model_validator
+from typing import List, Optional
+
+from pydantic import BaseModel, EmailStr
 
 
 class UserCreate(BaseModel):
@@ -51,6 +54,7 @@ class ReminderConfigMixin(BaseModel):
 
 
 class TaskCreate(ReminderConfigMixin):
+class TaskCreate(BaseModel):
     title: str
     description: Optional[str] = ""
     status: str = "todo"
@@ -62,6 +66,13 @@ class TaskCreate(ReminderConfigMixin):
 
 
 class TaskUpdate(ReminderConfigMixin):
+    due_date: Optional[str] = None
+    category: Optional[str] = None
+    tags: List[str] = []
+    reminder: Optional[str] = None
+
+
+class TaskUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
     status: Optional[str] = None
@@ -70,6 +81,10 @@ class TaskUpdate(ReminderConfigMixin):
     due_at: Optional[datetime] = None
     category: Optional[str] = None
     tags: Optional[List[str]] = None
+    due_date: Optional[str] = None
+    category: Optional[str] = None
+    tags: Optional[List[str]] = None
+    reminder: Optional[str] = None
 
 
 class TaskResponse(BaseModel):
@@ -88,6 +103,9 @@ class TaskResponse(BaseModel):
     repeat_every_minutes: Optional[int]
     repeat_start_at: Optional[str]
     repeat_end_at: Optional[str]
+    category: Optional[str]
+    tags: List[str]
+    reminder: Optional[str]
     user_id: str
     created_at: str
     updated_at: str

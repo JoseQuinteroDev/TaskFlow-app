@@ -33,6 +33,7 @@ async def get_stats(request: Request):
     todo = await db.tasks.count_documents({"user_id": user["id"], "status": "todo"})
     in_progress = await db.tasks.count_documents({"user_id": user["id"], "status": "in_progress"})
     done = await db.tasks.count_documents({"user_id": user["id"], "status": "done"})
+
     high_priority = await db.tasks.count_documents(
         {"user_id": user["id"], "priority": "high", "status": {"$ne": "done"}}
     )
@@ -51,6 +52,13 @@ async def get_stats(request: Request):
             due_today += 1
         if due_dt < now:
             overdue += 1
+    today = datetime.now(timezone.utc).date().isoformat()
+    due_today = await db.tasks.count_documents(
+        {"user_id": user["id"], "due_date": {"$regex": f"^{today}"}, "status": {"$ne": "done"}}
+    )
+    overdue = await db.tasks.count_documents(
+        {"user_id": user["id"], "due_date": {"$lt": today}, "status": {"$ne": "done"}}
+    )
 
     return {
         "total": total,
