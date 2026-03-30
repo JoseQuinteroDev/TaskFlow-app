@@ -1,34 +1,181 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* TaskFlow App Styles */
+
+/* Auth page split layout */
+.auth-container {
+    display: flex;
+    min-height: 100vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
+.auth-image {
+    flex: 1;
+    background-size: cover;
+    background-position: center;
+    display: none;
+}
+
+@media (min-width: 1024px) {
+    .auth-image {
+        display: block;
     }
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
+.auth-form {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+    padding: 2rem;
 }
 
-.App-link {
-    color: #61dafb;
+/* Kanban board styles */
+.kanban-board {
+    display: flex;
+    gap: 1rem;
+    height: calc(100vh - 200px);
+    overflow-x: auto;
+    padding-bottom: 1rem;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
+.kanban-column {
+    flex: 0 0 320px;
+    display: flex;
+    flex-direction: column;
+    background-color: #18181B;
+    border-radius: 0.5rem;
+    border: 1px solid #27272A;
+}
+
+.kanban-column-header {
+    padding: 1rem;
+    border-bottom: 1px solid #27272A;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+}
+
+.kanban-column-content {
+    flex: 1;
+    padding: 0.5rem;
+    overflow-y: auto;
+}
+
+/* Task card */
+.task-card {
+    background-color: #09090B;
+    border: 1px solid #27272A;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    cursor: grab;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.task-card:hover {
+    border-color: #3f3f46;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+.task-card:active {
+    cursor: grabbing;
+}
+
+.task-card.dragging {
+    transform: scale(1.02) rotate(2deg);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border-color: #FAFAFA;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    background-color: #09090B;
+    border-right: 1px solid #27272A;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-collapsed {
+    width: 64px;
+}
+
+/* Main content */
+.main-content {
+    margin-left: 240px;
+    min-height: 100vh;
+    background-color: #09090B;
+}
+
+.main-content-collapsed {
+    margin-left: 64px;
+}
+
+/* Topbar */
+.topbar {
+    height: 64px;
+    background-color: #09090B;
+    border-bottom: 1px solid #27272A;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+}
+
+/* Stats cards */
+.stat-card {
+    background-color: #18181B;
+    border: 1px solid #27272A;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    transition: border-color 0.2s ease;
+}
+
+.stat-card:hover {
+    border-color: #3f3f46;
+}
+
+/* Form inputs override for dark theme */
+input, textarea, select {
+    background-color: #09090B !important;
+}
+
+/* Badge styles */
+.badge-priority {
+    font-size: 0.625rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        z-index: 50;
     }
-    to {
-        transform: rotate(360deg);
+    
+    .sidebar.open {
+        transform: translateX(0);
+    }
+    
+    .main-content {
+        margin-left: 0;
+    }
+    
+    .kanban-board {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .kanban-column {
+        flex: 0 0 auto;
+        min-height: 300px;
     }
 }
