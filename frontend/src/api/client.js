@@ -1,13 +1,6 @@
 import axios from "axios";
 
-const backendUrl = process.env.REACT_APP_BACKEND_URL;
-
-if (!backendUrl) {
-  // eslint-disable-next-line no-console
-  console.warn("REACT_APP_BACKEND_URL is not defined. Falling back to http://localhost:8000");
-}
-
-export const API_BASE_URL = `${backendUrl || "http://localhost:8000"}/api`;
+export const API_BASE_URL = "https://taskflow-app-production-46a0.up.railway.app/api";
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -19,7 +12,6 @@ export const apiClient = axios.create({
 
 export function formatApiError(error, fallbackMessage = "Something went wrong. Please try again.") {
   const detail = error?.response?.data?.detail;
-
   if (!detail) return fallbackMessage;
   if (typeof detail === "string") return detail;
   if (Array.isArray(detail)) {
@@ -29,6 +21,5 @@ export function formatApiError(error, fallbackMessage = "Something went wrong. P
       .join(" ");
   }
   if (typeof detail?.msg === "string") return detail.msg;
-
   return fallbackMessage;
 }
