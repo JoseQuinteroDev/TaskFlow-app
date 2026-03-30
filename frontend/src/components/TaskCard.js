@@ -41,6 +41,14 @@ export default function TaskCard({ task, onEdit, onDelete, isDragging = false })
   const isOverdue = task.due_date && isPast(parseISO(task.due_date)) && task.status !== "done";
   const isDueToday = task.due_date && isToday(parseISO(task.due_date));
 
+  const handleCardClick = (e) => {
+    // Prevent opening edit modal when clicking on the menu
+    if (e.target.closest('[data-testid^="task-menu"]') || e.target.closest('[role="menu"]')) {
+      return;
+    }
+    onEdit?.();
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -49,6 +57,7 @@ export default function TaskCard({ task, onEdit, onDelete, isDragging = false })
       {...listeners}
       className={`task-card ${isDragging || isSortableDragging ? "dragging" : ""}`}
       data-testid={`task-card-${task.id}`}
+      onClick={handleCardClick}
     >
       {/* Header with priority and menu */}
       <div className="flex items-start justify-between mb-2">

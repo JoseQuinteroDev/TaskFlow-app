@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -113,6 +114,9 @@ export default function TaskModal({
           <DialogTitle className="text-zinc-50 text-xl" style={{ fontFamily: 'Manrope, sans-serif' }}>
             {task ? "Editar Tarea" : "Nueva Tarea"}
           </DialogTitle>
+          <DialogDescription className="text-zinc-400">
+            {task ? "Modifica los detalles de tu tarea" : "Completa los campos para crear una nueva tarea"}
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-5 mt-4">
