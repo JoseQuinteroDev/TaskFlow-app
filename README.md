@@ -45,7 +45,7 @@ TaskFlow is a full-stack task management application with Kanban workflow, JWT c
 - Task filters (search, priority, category)
 - Category management
 - Task stats dashboard (completion rate, overdue, due today)
-- Optional email reminders for tasks
+- Reminder modes: none, one-time datetime, recurring interval window
 
 ---
 
